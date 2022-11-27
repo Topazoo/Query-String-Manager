@@ -2,9 +2,9 @@ from src.QueryStringParser import QueryStringParser
 
 import unittest
 
-class TestGenerateRawQueryString(unittest.TestCase):
+class TestGenerateQueryString(unittest.TestCase):
     """
-        Tests for :class:`QueryStringParser._generate_raw_query_string()`
+        Tests for :class:`QueryStringParser.generate_query_string()`
     """
 
     def test_throws_exception_on_invalid_dict(self):
@@ -22,7 +22,7 @@ class TestGenerateRawQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_INVALID_DICTS:
-            self.assertRaises(ValueError, lambda: QueryStringParser._generate_raw_query_string(test_dict))
+            self.assertRaises(ValueError, lambda: QueryStringParser.generate_query_string(test_dict))
 
 
     def test_creates_single_arg_query_string(self):
@@ -43,7 +43,7 @@ class TestGenerateRawQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[1], QueryStringParser._generate_raw_query_string(test_dict[0]))
+            self.assertEquals(test_dict[1], QueryStringParser.generate_query_string(test_dict[0]))
 
 
     def test_creates_multiple_arg_query_string(self):
@@ -63,5 +63,21 @@ class TestGenerateRawQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[1], QueryStringParser._generate_raw_query_string(test_dict[0]))
+            self.assertEquals(test_dict[1], QueryStringParser.generate_query_string(test_dict[0]))
     
+            
+    def test_override_safe_chars(self):
+        """
+        Test the ability to override the "safe" characters to not replace with URL safe notations in a query string
+        This can be done by passing a string containg all characters that should not be replaced as an optional
+        parameter of `generate_query_string()`
+        """
+
+        TEST_DICTS__RULES_AND_RESULTS = [
+            (" /'!=", {"key w/ sp'ec chars": "value w/ spec chars!"}, "?key w/ sp'ec chars=value w/ spec chars!"),
+            ("/'!=", {"key w/ sp'ec chars": "value w/ spec chars!"}, "?key%20w/%20sp'ec%20chars=value%20w/%20spec%20chars!"),
+            ("/'!", {"key w/ sp'ec chars": "value w/ spec chars!"}, "?key%20w/%20sp'ec%20chars%3Dvalue%20w/%20spec%20chars!"),
+        ]
+
+        for test_dict in TEST_DICTS__RULES_AND_RESULTS:
+            self.assertEquals(test_dict[2], QueryStringParser.generate_query_string(test_dict[1], test_dict[0]))

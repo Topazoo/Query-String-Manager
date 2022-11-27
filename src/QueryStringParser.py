@@ -16,7 +16,8 @@ class QueryStringParser:
     def _generate_base64_encoded_query_string(params:dict) -> str:
         pass
 
-    def _generate_raw_query_string(params:dict) -> str:
+    @staticmethod
+    def generate_query_string(params:dict, safe_chars:str=None) -> str:
         """
         Generate a query string from a passed dictionary The passed dictionary must 
         meet the conditions defined in `_is_valid_single_level_dict()` or a ValueError will
@@ -24,6 +25,8 @@ class QueryStringParser:
 
         Arguments:
             params {dict} -- A dictionary of one or more key/value pairs to create a query string with
+            safe_chars {str} -- An optional string of characters to not replace in a query string. For example
+            "!?@="
 
         Raises:
             ValueError: If the dictionary does not meet the criteria in `_is_valid_single_level_dict()`
@@ -41,7 +44,7 @@ class QueryStringParser:
         raw_query_string = "&".join([f"{key}={QueryStringParser._normalize_value(value)}" for (key,value) in params.items()])
 
         # Normalize special characters for URLs
-        return "?" + quote(raw_query_string, safe=QueryStringParser.URLLIB_SAFE_CHARS)
+        return "?" + quote(raw_query_string, safe=safe_chars or QueryStringParser.URLLIB_SAFE_CHARS)
 
 
     # Decoders
@@ -56,6 +59,7 @@ class QueryStringParser:
     
 
     # Utils
+    @staticmethod
     def _is_valid_single_level_dict(params:dict) -> bool:
         """
         Determines if a passed dictionary is "single level." In this context "single level"
@@ -82,6 +86,7 @@ class QueryStringParser:
         return True
     
 
+    @staticmethod
     def _normalize_value(param:Union[int, str, bool, float]) -> str:
         """
         Normalizes a value for usage in a query string. For the following value types the
