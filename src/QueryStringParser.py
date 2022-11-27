@@ -1,9 +1,10 @@
 # Utils
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 import json, base64
 
 # Typing
 from typing import Union
+from decimal import Decimal
 
 class QueryStringParser:
     # Characters that should not be replaced with URL safe equivalents
@@ -76,9 +77,36 @@ class QueryStringParser:
     def _parse_base64_encoded_query_string(query_string:str) -> dict:
         pass
 
-    def _parse_raw_query_string(query_string:str) -> dict:
-        pass
-    
+    @staticmethod
+    def _parse_raw_query_string(query_string:str, normalize_value:bool=True) -> dict:
+        parsed_data = {}
+
+        # Ensure a string was passed
+        if not isinstance(query_string, str):
+            raise ValueError("Cannot parse a query string from an object that is not a string")
+        
+        # Remove "?" if it's at the beginning
+        if query_string[0] == "?":
+            query_string = query_string[1:]
+
+        # Split fields if multiple fields
+        key_value_pairs = query_string.split("&")
+        if len(key_value_pairs) < 1:
+            raise ValueError("Cannot parse a query string from an empty string")
+        
+        # Split key and value
+        for key_value in key_value_pairs:
+            key_and_value = key_value.split("=")
+
+            if len(key_and_value) != 2:
+                raise ValueError("Malformatted query string")
+            
+            # Convert data
+            parsed_data[unquote(key_and_value[0])] = QueryStringParser._un_normalize_value(unquote(key_and_value[1])) if \
+                normalize_value else unquote(key_and_value[1])
+
+        return parsed_data
+
 
     # Utils
     @staticmethod
@@ -109,14 +137,14 @@ class QueryStringParser:
     
 
     @staticmethod
-    def _normalize_value(param:Union[int, str, bool, float]) -> str:
+    def _normalize_value(param:Union[int, str, bool, float, Decimal]) -> str:
         """
         Normalizes a value for usage in a query string. For the following value types the
         following normalization occurs:
 
         - str - None
         - int - Converted to a string
-        - float - Converted to a string
+        - float/Decimal - Converted to a string
         - bool - Converted to a lowercase string
 
         Arguments:
@@ -128,5 +156,38 @@ class QueryStringParser:
         
         if isinstance(param, bool):
             return str(param).lower()
+        
+        return param
+
+
+    @staticmethod
+    def _un_normalize_value(param:str) -> Union[int, str, bool, Decimal]:
+        """
+        "Un-normalizes" a value passed in a query string. The following datatypes will be
+        inferred from the content of the query string and converted to their respective type
+
+        - str - None
+        - int - (a detected integer will be converted to an Integer)
+        - float - (a detected decimal will be converted to a Decimal)
+        - bool - (a value of true/false will be converted to a Python Bool)
+
+        Arguments:
+            param {Union[int, str, bool, Decimal]} -- The parameter to "un-normalize"
+
+        Returns:
+            str -- The normalized value
+        """
+
+        # Check for bool
+        if param.lower() in ["false", "true"]:
+            return json.loads(param.lower())
+        
+        # If there is a single . in a series of digits it is a decimal
+        if '.' in param and param.replace('.', '1').lstrip('-').isdigit():
+            return Decimal(param)
+
+        # If it is all digits but not decimal, it is an integer
+        if param.lstrip('-').isdigit():
+            return int(param)
         
         return param
