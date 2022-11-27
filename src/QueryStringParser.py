@@ -77,8 +77,27 @@ class QueryStringParser:
     def _parse_base64_encoded_query_string(query_string:str) -> dict:
         pass
 
+    
     @staticmethod
     def _parse_raw_query_string(query_string:str, normalize_value:bool=True) -> dict:
+        """
+        Parses a standard query string into a dictionary. By default, passed data will be normalized
+        to Python objects (e.g. "false" will become False). Floating point data will be converted to `decimal.Decimal`
+        to ensure no widening / narrowing issues occur.
+
+        Arguments:
+            query_string {str} -- The query string to parse into a dictionary
+
+        Keyword Arguments:
+            normalize_value {bool} -- If the values parsed should be normalized from strings to Python objects (default: {True})
+
+        Raises:
+            ValueError: If the query string is malformatted or invalid
+
+        Returns:
+            dict -- The parsed query string
+        """
+
         parsed_data = {}
 
         # Ensure a string was passed
