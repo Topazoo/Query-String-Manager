@@ -1,5 +1,6 @@
 # Utils
 from urllib.parse import quote
+import json, base64
 
 # Typing
 from typing import Union
@@ -9,13 +10,34 @@ class QueryStringParser:
     # when generating query strings
     URLLIB_SAFE_CHARS = ";/?!:@&=+$,."
 
-    # Encoders
-    def generate_query_string(params:dict, base64_encode:bool) -> str:
-        pass
+    @staticmethod
+    def generate_base64_encoded_query_string(params:dict, field_name:str="q") -> str:
+        """
+        Generate a base64 encoded query string from a passed dictionary. Unlike a standard query string,
+        a base64 encoded query string can support nested dictionaries and lists. A field identifier should
+        be passed to hold the query string (the default is "q"), which produces: "?q=<base64 encoded data"
 
-    def _generate_base64_encoded_query_string(params:dict) -> str:
-        pass
+        Arguments:
+            params {dict} -- A dictionary to create a query string from
 
+        Keyword Arguments:
+            field_name {str} -- The field name to store the encoded query string data under (default: {"q"})
+
+        Raises:
+            ValueError: If the passed value for params is not a dictionary
+
+        Returns:
+            str -- The base64 encoded query string
+        """
+
+        if not isinstance(params, dict):
+            raise ValueError("Cannot generate a base64 encoded query string. Passed params argument is \
+            not a dictionary.")
+        
+        query_string_data = base64.urlsafe_b64encode(json.dumps(params).encode('UTF-8'))
+        return f"?{field_name}={query_string_data.decode('UTF-8')}"
+
+    
     @staticmethod
     def generate_query_string(params:dict, safe_chars:str=None) -> str:
         """
