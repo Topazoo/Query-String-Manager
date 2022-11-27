@@ -130,7 +130,7 @@ class QueryStringParser:
 
         # Check all values to ensure they're not lists, dictionaries or None
         for value in params.values():
-            if not isinstance(value, (float, int, str, bool)):
+            if not isinstance(value, (float, int, str, bool, Decimal)):
                 return False
             
         return True

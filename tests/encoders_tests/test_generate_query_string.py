@@ -1,3 +1,4 @@
+from decimal import Decimal
 from src.QueryStringParser import QueryStringParser
 
 import unittest
@@ -40,6 +41,7 @@ class TestGenerateQueryString(unittest.TestCase):
             ({"test": True}, "?test=true"),
             ({"test": False}, "?test=false"),
             ({"test": 3.14}, "?test=3.14"),
+            ({"test": Decimal("3.14")}, "?test=3.14"),
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
