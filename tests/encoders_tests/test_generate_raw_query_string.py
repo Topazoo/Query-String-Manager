@@ -22,7 +22,7 @@ class TestGenerateRawQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_INVALID_DICTS:
-            self.assertRaises(ValueError, QueryStringParser._generate_raw_query_string(test_dict))
+            self.assertRaises(ValueError, lambda: QueryStringParser._generate_raw_query_string(test_dict))
 
 
     def test_creates_single_arg_query_string(self):
@@ -35,6 +35,7 @@ class TestGenerateRawQueryString(unittest.TestCase):
 
         TEST_DICTS_AND_RESULTS = [
             ({"key": "value"}, "?key=value"),
+            ({"key w/ sp'ec chars": "value w/ spec chars!"}, "?key%20w/%20sp%27ec%20chars=value%20w/%20spec%20chars!"),
             ({"test": 1}, "?test=1"),
             ({"test": True}, "?test=true"),
             ({"test": False}, "?test=false"),
