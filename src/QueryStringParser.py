@@ -47,7 +47,3 @@ class QueryStringParser:
                 return False
             
         return True
-
-
-    def _is_base64_encoded(query_string:str) -> bool:
-        pass
