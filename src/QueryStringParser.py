@@ -71,10 +71,35 @@ class QueryStringParser:
 
 
     # Decoders
-    
+    @staticmethod
     def _parse_base64_encoded_query_string(query_string:str) -> dict:
-        pass
+        
+        parsed_data = {}
 
+        # Ensure a string was passed
+        if not isinstance(query_string, str):
+            raise ValueError("Cannot parse a query string from an object that is not a string")
+        
+        # Remove "?" if it's at the beginning
+        if query_string[0] == "?":
+            query_string = query_string[1:]
+
+        # Split fields if multiple fields
+        key_value_pairs = query_string.split("&")
+        if len(key_value_pairs) < 1:
+            raise ValueError("Cannot parse a query string from an empty string")
+        
+        # Split key and value
+        for key_value in key_value_pairs:
+            key_and_value = key_value.split("=", 1)
+
+            if len(key_and_value) != 2:
+                raise ValueError("Malformatted query string")
+            
+            parsed_data[unquote(key_and_value[0])] = json.loads(base64.urlsafe_b64decode(key_and_value[1]), parse_float=lambda flt: Decimal(flt))
+
+        return parsed_data
+    
     
     @staticmethod
     def parse_query_string(query_string:str, normalize_value:bool=True) -> dict:
