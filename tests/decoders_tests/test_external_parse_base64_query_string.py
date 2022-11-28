@@ -24,4 +24,4 @@ class TestParseExternalBase64QueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[0], QueryStringManager.parse_base64_query_string(test_dict[1]))
+            self.assertEqual(test_dict[0], QueryStringManager.parse_base64_query_string(test_dict[1]))
