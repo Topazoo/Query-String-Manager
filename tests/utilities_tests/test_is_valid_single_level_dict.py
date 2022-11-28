@@ -1,10 +1,10 @@
-from src.QueryStringParser import QueryStringParser
+from src.QueryStringManager import QueryStringManager
 
 import unittest
 
 class TestIsSingleLevelDict(unittest.TestCase):
     """
-        Tests for :class:`QueryStringParser._is_valid_single_level_dict()`
+        Tests for :class:`QueryStringManager._is_valid_single_level_dict()`
     """
 
     def test_empty_dict_is_invalid(self):
@@ -13,7 +13,7 @@ class TestIsSingleLevelDict(unittest.TestCase):
         """
 
         test_dict = {}
-        is_single_level_dict = QueryStringParser._is_valid_single_level_dict(test_dict)
+        is_single_level_dict = QueryStringManager._is_valid_single_level_dict(test_dict)
 
         self.assertIsNotNone(is_single_level_dict, "This method should never return None")
         self.assertFalse(is_single_level_dict)
@@ -32,7 +32,7 @@ class TestIsSingleLevelDict(unittest.TestCase):
         ]
 
         for non_dict in TEST_NON_DICTS:
-            is_single_level_dict = QueryStringParser._is_valid_single_level_dict(non_dict)
+            is_single_level_dict = QueryStringManager._is_valid_single_level_dict(non_dict)
             self.assertIsNotNone(is_single_level_dict, "This method should never return None")
             self.assertFalse(is_single_level_dict)
     
@@ -50,7 +50,7 @@ class TestIsSingleLevelDict(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS:
-            is_single_level_dict = QueryStringParser._is_valid_single_level_dict(test_dict)
+            is_single_level_dict = QueryStringManager._is_valid_single_level_dict(test_dict)
             self.assertTrue(is_single_level_dict)
 
 
@@ -66,7 +66,7 @@ class TestIsSingleLevelDict(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS:
-            is_single_level_dict = QueryStringParser._is_valid_single_level_dict(test_dict)
+            is_single_level_dict = QueryStringManager._is_valid_single_level_dict(test_dict)
             self.assertIsNotNone(is_single_level_dict, "This method should never return None")
             self.assertFalse(is_single_level_dict)
 
@@ -83,7 +83,7 @@ class TestIsSingleLevelDict(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS:
-            is_single_level_dict = QueryStringParser._is_valid_single_level_dict(test_dict)
+            is_single_level_dict = QueryStringManager._is_valid_single_level_dict(test_dict)
             self.assertIsNotNone(is_single_level_dict, "This method should never return None")
             self.assertFalse(is_single_level_dict)
 
@@ -99,6 +99,6 @@ class TestIsSingleLevelDict(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS:
-            is_single_level_dict = QueryStringParser._is_valid_single_level_dict(test_dict)
+            is_single_level_dict = QueryStringManager._is_valid_single_level_dict(test_dict)
             self.assertIsNotNone(is_single_level_dict, "This method should never return None")
             self.assertFalse(is_single_level_dict)
