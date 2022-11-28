@@ -74,6 +74,62 @@ class QueryStringManager:
     
     # ----------------------- Decoders ----------------------- #
     @staticmethod
+    def parse(query_string:str) -> dict:
+        """
+        Parses a passed query string into a dictionary. The data in the query string may be in standard or
+        in base64 format. This method will detect the encoding and parse it. Values parsed from the query string
+        will be normalized to Python objects (e.g. "false" will become False). Floating point data will be converted 
+        to `decimal.Decimal` to ensure no widening / narrowing issues occur.
+
+        This method can generally be used in place of `parse_base64_query_string()` and `parse_query_string()` with
+        the drawback of a slight performance hit checking each the encoding of each field in the query string
+
+        Arguments:
+            query_string {str} -- The query string to parse into a dictionary
+
+        Raises:
+            ValueError: If the query string is malformatted or invalid
+
+        Returns:
+            dict -- The parsed query string
+        """
+
+        parsed_data = {}
+
+        # Ensure a string was passed
+        if not isinstance(query_string, str):
+            raise ValueError("Cannot parse a query string from an object that is not a string")
+        
+        # Remove "?" if it's at the beginning
+        if query_string[0] == "?":
+            query_string = query_string[1:]
+
+        # Split fields if multiple fields
+        key_value_pairs = query_string.split("&")
+        if len(key_value_pairs) < 1:
+            raise ValueError("Cannot parse a query string from an empty string")
+        
+        # Split key and value
+        for key_value in key_value_pairs:
+            # If the key happens to be "=", handle that
+            if key_value[0:2] == "==":
+                key_and_value = ["=", key_value.lstrip("=")]
+            else:
+                key_and_value = key_value.split("=", 1)
+
+            if len(key_and_value) != 2:
+                raise ValueError("Malformatted query string")
+            
+            # Detect base64 encoded strings
+            if QueryStringManager._is_base64(key_and_value[1]):
+                parsed_data.update(QueryStringManager.parse_base64_query_string(key_value))
+            else:
+                parsed_data.update(QueryStringManager.parse_query_string(key_value))
+        
+        return parsed_data
+
+            
+    @staticmethod
     def parse_base64_query_string(query_string:str) -> dict:
         """
         Parses a Base64 encoded query string into a dictionary. By default, passed data will be normalized
@@ -158,9 +214,9 @@ class QueryStringManager:
         
         # Split key and value
         for key_value in key_value_pairs:
-            key_and_value = key_value.split("=")
+            key_and_value = key_value.split("=", 1)
 
-            if len(key_and_value) != 2:
+            if len(key_and_value) != 2 or key_and_value[1] == '':
                 raise ValueError("Malformatted query string")
             
             # Convert data
@@ -253,4 +309,13 @@ class QueryStringManager:
             return int(param)
         
         return param
+    
+    @staticmethod
+    def _is_base64(s:str):
+        """ Check if a string is base64 encoded """
+        try:
+            base64.urlsafe_b64decode(s).decode()
+            return True
+        except Exception:
+            return False
     # -------------------------------------------------------- #
