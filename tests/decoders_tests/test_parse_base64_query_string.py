@@ -1,5 +1,5 @@
 from decimal import Decimal
-from src.QueryStringManager import QueryStringManager
+from query_string_manager import QueryStringManager
 
 import unittest
 
@@ -44,7 +44,7 @@ class TestParseBase64QueryString(unittest.TestCase):
             ({"=": {"test": [True]}}, "?%3D=eyJ0ZXN0IjogW3RydWVdfQ=="),
             ({"q": "Hello"}, "?q=IkhlbGxvIg=="),
             ({"test": [1,2,3]}, "?test=WzEsIDIsIDNd"),
-            ({"field name": "0.1"}, "?field%20name=IjAuMSI="), # TODO - Fix - custom encoder
+            ({"field name": Decimal("0.01")}, "?field%20name=MC4wMQ=="),
             ({"test": Decimal("3.14")}, "?test=My4xNA=="),
         ]
 
