@@ -1,5 +1,5 @@
 from decimal import Decimal
-from src.QueryStringManager import QueryStringManager
+from query_string_manager import QueryStringManager
 
 import unittest
 
