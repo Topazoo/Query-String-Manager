@@ -13,7 +13,7 @@ class QueryStringManager:
 
     # ----------------------- Encoders ----------------------- #
     @staticmethod
-    def generate_base64_query_string(params:Union[int, str, bool, float, Decimal], field_name:str="q") -> str:
+    def generate_base64_query_string(params:Union[int, str, bool, float, Decimal, list, dict], field_name:str="q") -> str:
         """
         Generate a base64 encoded query string from a passed dictionary. Unlike a standard query string,
         a base64 encoded query string can support nested dictionaries and lists. A field identifier should
@@ -76,7 +76,7 @@ class QueryStringManager:
     @staticmethod
     def parse_base64_query_string(query_string:str) -> dict:
         """
-        Parses a BBase64 encoded query string into a dictionary. By default, passed data will be normalized
+        Parses a Base64 encoded query string into a dictionary. By default, passed data will be normalized
         to Python objects (e.g. "false" will become False). Floating point data will be converted to `decimal.Decimal`
         to ensure no widening / narrowing issues occur.
 
