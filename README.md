@@ -31,6 +31,10 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> QueryStringManager.parse_query_string('?str=arg&int=1&float=0.01&bool=true')
 {'str': 'arg', 'int': 1, 'float': Decimal('0.01'), 'bool': True}
 
+
+>>> QueryStringManager.parse('?str=arg&int=1&float=0.01&bool=true')
+{'str': 'arg', 'int': 1, 'float': Decimal('0.01'), 'bool': True}
+
 # Generate a base64 encoded query string from a dictionary
 
 >>> QueryStringManager.generate_base64_query_string({"nested_dict": {"float": .1}, "list": [{"int": 1, "bool": True}]})
@@ -39,6 +43,9 @@ Type "help", "copyright", "credits" or "license" for more information.
 # Parse a base64 encoded query string to a dictionary
 
 >>> QueryStringManager.parse_base64_query_string('?data=eyJuZXN0ZWRfZGljdCI6IHsiZmxvYXQiOiAwLjF9LCAibGlzdCI6IFt7ImludCI6IDEsICJib29sIjogdHJ1ZX1dfQ==')
+{'data': {'nested_dict': {'float': Decimal('0.1')}, 'list': [{'int': 1, 'bool': True}]}}
+
+>>> QueryStringManager.parse('?data=eyJuZXN0ZWRfZGljdCI6IHsiZmxvYXQiOiAwLjF9LCAibGlzdCI6IFt7ImludCI6IDEsICJib29sIjogdHJ1ZX1dfQ==')
 {'data': {'nested_dict': {'float': Decimal('0.1')}, 'list': [{'int': 1, 'bool': True}]}}
 ```
 
@@ -89,6 +96,33 @@ This library can also be used to generate these query strings directly:
 ```
 
 ## Methods
+
+### QueryStringManager.parse()
+
+```python
+parse(query_string:str)
+```
+
+<b>Arguments:</b>
+
+- <i>query_string</i> - The query string to parse into a dictionary. A valid query string will use `"="` to seperate keys and values, like: `"?key=value"`. The `"?"` prefix is optional in query strings passed to this method.
+
+    <br>
+
+    The data in the query string may be in standard or in base64 format. This method will detect the encoding and parse it even if different fields may have different formats
+
+    <br>
+
+    This method can generally be used in place of `parse_base64_query_string()` and `parse_query_string()` with the drawback of a slight performance hit checking each the encoding of each field in the query string. See these methods for details on parsing behavior when either format is present
+
+
+<b>Returns:</b>
+
+- <i>dict</i> - A dict containing the key/value pairs in the query string
+
+<b>Exceptions:</b>
+
+- <i>ValueError</i> - If the passed `query_string` does not have a valid format this exception will be thrown
 
 ### QueryStringManager.generate_query_string()
 
