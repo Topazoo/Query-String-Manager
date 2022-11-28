@@ -90,7 +90,7 @@ This library can also be used to generate these query strings directly:
 
 ## Methods
 
-#### QueryStringManager.generate_query_string()
+### QueryStringManager.generate_query_string()
 
 ```python
 generate_query_string(params:dict, safe_chars:str=None)
@@ -99,7 +99,9 @@ generate_query_string(params:dict, safe_chars:str=None)
 <b>Arguments:</b>
 
 - <i>params</i> - A dictionary of key/value pairs to write to a query string. This dictionary must be flat and contain no sequences. In addition, the values in the dictionary must be one of the following types: (`str`, `int`, `float` `decimal.Decimal`,  `bool`). These are the only types that can be cleanly represented in a normal query string
+
 <br>
+
 - <i>safe_chars [optional]</i> - When the query string is generated, some characters will be replaced with URL safe characters (such as `" "` to `"%20"`). These characters are defined in RFC 3986 and the replacement is performed by [urllib.parse.quote](https://docs.python.org/3/library/urllib.parse.html#url-quoting). This library specifies some characters to not replace by default (`";/?!:@&=+$,."`). The `safe_chars` argument allows a custom string to be passed defining the characters that should not be replaced by URL safe equivalents
 
 <b>Returns:</b>
@@ -110,7 +112,7 @@ generate_query_string(params:dict, safe_chars:str=None)
 
 - <i>ValueError</i> - If the constraints on <i>params</i> listed above are not met this exception will be thrown
 
-#### QueryStringManager.parse_query_string()
+### QueryStringManager.parse_query_string()
 
 ```python
 parse_query_string(query_string:str, normalize_value:bool=True)
@@ -132,7 +134,7 @@ parse_query_string(query_string:str, normalize_value:bool=True)
 
 - <i>ValueError</i> - If the passed `query_string` does not have a valid format this exception will be thrown
 
-#### QueryStringManager.generate_base64_query_string()
+### QueryStringManager.generate_base64_query_string()
 
 ```python
 generate_base64_query_string(params:Union[int, str, bool, float, Decimal, list, dict], field_name:str="q")
@@ -179,7 +181,7 @@ generate_base64_query_string(params:Union[int, str, bool, float, Decimal, list, 
 
 - <i>ValueError</i> - If the type constraints on <i>params</i> listed above are not met this exception will be thrown
 
-#### QueryStringManager.parse_base64_query_string()
+### QueryStringManager.parse_base64_query_string()
 
 ```python
 parse_base64_query_string(query_string:str)
