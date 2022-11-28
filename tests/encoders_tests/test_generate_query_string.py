@@ -45,7 +45,7 @@ class TestGenerateQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[1], QueryStringManager.generate_query_string(test_dict[0]))
+            self.assertEqual(test_dict[1], QueryStringManager.generate_query_string(test_dict[0]))
 
 
     def test_creates_multiple_arg_query_string(self):
@@ -65,7 +65,7 @@ class TestGenerateQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[1], QueryStringManager.generate_query_string(test_dict[0]))
+            self.assertEqual(test_dict[1], QueryStringManager.generate_query_string(test_dict[0]))
     
             
     def test_override_safe_chars(self):
@@ -82,4 +82,4 @@ class TestGenerateQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS__RULES_AND_RESULTS:
-            self.assertEquals(test_dict[2], QueryStringManager.generate_query_string(test_dict[1], test_dict[0]))
+            self.assertEqual(test_dict[2], QueryStringManager.generate_query_string(test_dict[1], test_dict[0]))

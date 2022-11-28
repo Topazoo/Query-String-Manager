@@ -46,7 +46,7 @@ class TestParseQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[0], QueryStringManager.parse_query_string(test_dict[1]))
+            self.assertEqual(test_dict[0], QueryStringManager.parse_query_string(test_dict[1]))
 
 
     def test_parse_multiple_arg_query_string(self):
@@ -66,7 +66,7 @@ class TestParseQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[0], QueryStringManager.parse_query_string(test_dict[1]))
+            self.assertEqual(test_dict[0], QueryStringManager.parse_query_string(test_dict[1]))
     
             
     def test_not_normalizing_values(self):
@@ -84,5 +84,5 @@ class TestParseQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[0], QueryStringManager.parse_query_string(test_dict[1], False))
+            self.assertEqual(test_dict[0], QueryStringManager.parse_query_string(test_dict[1], False))
     
