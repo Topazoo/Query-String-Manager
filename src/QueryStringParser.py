@@ -11,6 +11,7 @@ class QueryStringParser:
     # when generating query strings
     URLLIB_SAFE_CHARS = ";/?!:@&=+$,."
 
+    # ----------------------- Encoders ----------------------- #
     @staticmethod
     def generate_base64_encoded_query_string(params:Union[int, str, bool, float, Decimal], field_name:str="q") -> str:
         """
@@ -68,11 +69,26 @@ class QueryStringParser:
 
         # Normalize special characters for URLs
         return "?" + quote(raw_query_string, safe=safe_chars or QueryStringParser.URLLIB_SAFE_CHARS)
+    # -------------------------------------------------------- #
 
-
-    # Decoders
+    
+    # ----------------------- Decoders ----------------------- #
     @staticmethod
-    def _parse_base64_encoded_query_string(query_string:str) -> dict:
+    def parse_base64_query_string(query_string:str) -> dict:
+        """
+        Parses a BBase64 encoded query string into a dictionary. By default, passed data will be normalized
+        to Python objects (e.g. "false" will become False). Floating point data will be converted to `decimal.Decimal`
+        to ensure no widening / narrowing issues occur.
+
+        Arguments:
+            query_string {str} -- The query string to parse into a dictionary
+
+        Raises:
+            ValueError: If the query string is malformatted or invalid
+
+        Returns:
+            dict -- The parsed query string
+        """
         
         parsed_data = {}
 
@@ -152,9 +168,9 @@ class QueryStringParser:
                 normalize_value else unquote(key_and_value[1])
 
         return parsed_data
+    # -------------------------------------------------------- #
 
-
-    # Utils
+    # -----------------------   Utils  ----------------------- #
     @staticmethod
     def _is_valid_single_level_dict(params:dict) -> bool:
         """
@@ -237,3 +253,4 @@ class QueryStringParser:
             return int(param)
         
         return param
+    # -------------------------------------------------------- #
