@@ -1,3 +1,4 @@
+from decimal import Decimal
 from src.QueryStringParser import QueryStringParser
 
 import unittest
@@ -14,7 +15,7 @@ class TestGenerateBase64QueryString(unittest.TestCase):
 
         TEST_INVALID_DICTS = [
             None,
-            1
+            ValueError
         ]
 
         for test_dict in TEST_INVALID_DICTS:
@@ -33,11 +34,33 @@ class TestGenerateBase64QueryString(unittest.TestCase):
             ({"test": [1,2,3]}, "?q=eyJ0ZXN0IjogWzEsIDIsIDNdfQ=="),
             ({"test": [{"hi": "There"}]}, "?q=eyJ0ZXN0IjogW3siaGkiOiAiVGhlcmUifV19"),
             ({"test": 3.14}, "?q=eyJ0ZXN0IjogMy4xNH0="),
+            ({"test": Decimal("3.14")}, "?q=eyJ0ZXN0IjogMy4xNH0="),
             ({"test": [True]}, "?q=eyJ0ZXN0IjogW3RydWVdfQ=="),
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
             self.assertEquals(test_dict[1], QueryStringParser.generate_base64_encoded_query_string(test_dict[0]))
+
+            
+    def test_creates_single_arg_query_string_non_dict(self):
+        """
+        Create a base64 encoded query string from a non-dict with a single key-value pair
+        """
+
+        TEST_DICTS_AND_RESULTS = [
+            ("Hello", "?q=IkhlbGxvIg=="),
+            ("test", [1,2,3], "?test=WzEsIDIsIDNd"),
+            ("field name", Decimal(".1"), "?field%20name=MC4x"),
+            ("test", Decimal("3.14"), "?test=My4xNA=="),
+            ("test", 3.14, "?test=My4xNA=="),
+            ("=", True, "?==dHJ1ZQ=="),
+        ]
+
+        for test_dict in TEST_DICTS_AND_RESULTS:
+            if len(test_dict) == 2:
+                self.assertEquals(test_dict[1], QueryStringParser.generate_base64_encoded_query_string(test_dict[0]))
+            else:
+                self.assertEquals(test_dict[2], QueryStringParser.generate_base64_encoded_query_string(test_dict[1], test_dict[0]))
 
 
     def test_creates_multiple_arg_query_string(self):

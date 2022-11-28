@@ -12,7 +12,7 @@ class QueryStringParser:
     URLLIB_SAFE_CHARS = ";/?!:@&=+$,."
 
     @staticmethod
-    def generate_base64_encoded_query_string(params:dict, field_name:str="q") -> str:
+    def generate_base64_encoded_query_string(params:Union[int, str, bool, float, Decimal], field_name:str="q") -> str:
         """
         Generate a base64 encoded query string from a passed dictionary. Unlike a standard query string,
         a base64 encoded query string can support nested dictionaries and lists. A field identifier should
@@ -31,12 +31,12 @@ class QueryStringParser:
             str -- The base64 encoded query string
         """
 
-        if not isinstance(params, dict):
+        if not isinstance(params, (int, str, bool, float, Decimal, list, dict)):
             raise ValueError("Cannot generate a base64 encoded query string. Passed params argument is \
-            not a dictionary.")
+            not serializable")
         
-        query_string_data = base64.urlsafe_b64encode(json.dumps(params).encode('UTF-8'))
-        return f"?{field_name}={query_string_data.decode('UTF-8')}"
+        query_string_data = base64.urlsafe_b64encode(json.dumps(params, default=float).encode('UTF-8'))
+        return f"?{quote(field_name, safe=QueryStringParser.URLLIB_SAFE_CHARS)}={query_string_data.decode('UTF-8')}"
 
     
     @staticmethod
@@ -91,7 +91,11 @@ class QueryStringParser:
         
         # Split key and value
         for key_value in key_value_pairs:
-            key_and_value = key_value.split("=", 1)
+            # If the key happens to be "=", handle that
+            if key_value[0:2] == "==":
+                key_and_value = ["=", key_value.lstrip("=")]
+            else:
+                key_and_value = key_value.split("=", 1)
 
             if len(key_and_value) != 2:
                 raise ValueError("Malformatted query string")
