@@ -215,6 +215,11 @@ parse_base64_query_string(query_string:str)
 ## Contributing
 
 - Contributions are welcome! Please not the following when contributing:
-  - Unittests must be added under the `tests/` directory for the PR to be approved
+  - Unittests must be added under the `tests/` directory for the PR to be approved. You can run unittests from the root project directory with the following command:
+
+    ```sh
+    $ python -m unittest discover -s tests -p test*.py
+    ```
+
   - PRs cannot be merged without all unittests passing (they will execute automatically)
   - Merges to `main` will automatically create a new release on PyPi
