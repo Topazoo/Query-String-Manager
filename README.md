@@ -67,7 +67,7 @@ Similarly it can parse query strings into dictionaries of the same types (`float
 
 More interestingly, this utility also allows the same functionality but with base64 encoded query strings. This allows more complex objects such as lists and nested dictionaries to be passed in a query string.
 
-For example, a Javascript application could create the following complex query string:  
+For example, a Javascript application could create the following complex query string and base64 encode it:  
 
 ```js
 var obj = {nested: {a: 'a', b: 'b'}, list: [1, {"in": "list"}, true]};
