@@ -19,8 +19,7 @@ class TestParseQueryString(unittest.TestCase):
             None,
             1,
             "q=test&data",
-            "?q=test&data="
-            "??q=test"
+            "?q=test&data=",
             "?q="
         ]
 
