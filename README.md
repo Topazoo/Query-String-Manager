@@ -95,6 +95,15 @@ This library can also be used to generate these query strings directly:
 '?data=eyJuZXN0ZWQiOiB7ImEiOiAiYSIsICJiIjogImIifSwgImxpc3QiOiBbMSwgeyJpbiI6ICJsaXN0In0sIHRydWVdfQ=='
 ```
 
+For the cost of a tiny performance hit, the `parse()` method may be used to parse either a base64 encoded or normal format query string, or a query string with a mix of formats:
+
+```python
+>>> from query_string_manager import QueryStringManager
+
+>>> QueryStringManager.parse("?val2=false&y=eyJ0ZXN0MiI6IFsxLCAyLCAzXX0=")
+{"val2": False, "y": {"test2": [1,2,3]}}
+```
+
 ## Methods
 
 ### QueryStringManager.parse()
@@ -105,13 +114,10 @@ parse(query_string:str)
 
 <b>Arguments:</b>
 
-- <i>query_string</i> - The query string to parse into a dictionary. A valid query string will use `"="` to seperate keys and values, like: `"?key=value"`. The `"?"` prefix is optional in query strings passed to this method.
-
-    <br>
+- <i>query_string</i> - The query string to parse into a dictionary. A valid query string will use `"="` to seperate keys and values, like: `"?key=value"`. The `"?"` prefix is optional in query strings passed to this method.  
 
     The data in the query string may be in standard or in base64 format. This method will detect the encoding and parse it even if different fields may have different formats
-
-    <br>
+  
 
     This method can generally be used in place of `parse_base64_query_string()` and `parse_query_string()` with the drawback of a slight performance hit checking each the encoding of each field in the query string. See these methods for details on parsing behavior when either format is present
 
