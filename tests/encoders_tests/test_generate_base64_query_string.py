@@ -1,11 +1,11 @@
 from decimal import Decimal
-from src.QueryStringParser import QueryStringParser
+from src.QueryStringManager import QueryStringManager
 
 import unittest
 
 class TestGenerateBase64QueryString(unittest.TestCase):
     """
-        Tests for :class:`QueryStringParser.generate_base64_encoded_query_string()`
+        Tests for :class:`QueryStringManager.generate_base64_query_string()`
     """
 
     def test_throws_exception_on_invalid_dict(self):
@@ -19,7 +19,7 @@ class TestGenerateBase64QueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_INVALID_DICTS:
-            self.assertRaises(ValueError, lambda: QueryStringParser.generate_base64_encoded_query_string(test_dict))
+            self.assertRaises(ValueError, lambda: QueryStringManager.generate_base64_query_string(test_dict))
 
 
     def test_creates_single_arg_query_string(self):
@@ -39,7 +39,7 @@ class TestGenerateBase64QueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[1], QueryStringParser.generate_base64_encoded_query_string(test_dict[0]))
+            self.assertEquals(test_dict[1], QueryStringManager.generate_base64_query_string(test_dict[0]))
 
             
     def test_creates_single_arg_query_string_non_dict(self):
@@ -58,9 +58,9 @@ class TestGenerateBase64QueryString(unittest.TestCase):
 
         for test_dict in TEST_DICTS_AND_RESULTS:
             if len(test_dict) == 2:
-                self.assertEquals(test_dict[1], QueryStringParser.generate_base64_encoded_query_string(test_dict[0]))
+                self.assertEquals(test_dict[1], QueryStringManager.generate_base64_query_string(test_dict[0]))
             else:
-                self.assertEquals(test_dict[2], QueryStringParser.generate_base64_encoded_query_string(test_dict[1], test_dict[0]))
+                self.assertEquals(test_dict[2], QueryStringManager.generate_base64_query_string(test_dict[1], test_dict[0]))
 
 
     def test_creates_multiple_arg_query_string(self):
@@ -75,7 +75,7 @@ class TestGenerateBase64QueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[1], QueryStringParser.generate_base64_encoded_query_string(test_dict[0]))
+            self.assertEquals(test_dict[1], QueryStringManager.generate_base64_query_string(test_dict[0]))
 
             
     def test_override_field_name(self):
@@ -90,4 +90,4 @@ class TestGenerateBase64QueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS__RULES_AND_RESULTS:
-            self.assertEquals(test_dict[2], QueryStringParser.generate_base64_encoded_query_string(test_dict[1], test_dict[0]))
+            self.assertEquals(test_dict[2], QueryStringManager.generate_base64_query_string(test_dict[1], test_dict[0]))

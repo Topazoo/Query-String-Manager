@@ -6,14 +6,14 @@ import json, base64
 from typing import Union
 from decimal import Decimal
 
-class QueryStringParser:
+class QueryStringManager:
     # Characters that should not be replaced with URL safe equivalents
     # when generating query strings
     URLLIB_SAFE_CHARS = ";/?!:@&=+$,."
 
     # ----------------------- Encoders ----------------------- #
     @staticmethod
-    def generate_base64_encoded_query_string(params:Union[int, str, bool, float, Decimal], field_name:str="q") -> str:
+    def generate_base64_query_string(params:Union[int, str, bool, float, Decimal], field_name:str="q") -> str:
         """
         Generate a base64 encoded query string from a passed dictionary. Unlike a standard query string,
         a base64 encoded query string can support nested dictionaries and lists. A field identifier should
@@ -37,7 +37,7 @@ class QueryStringParser:
             not serializable")
         
         query_string_data = base64.urlsafe_b64encode(json.dumps(params, default=float).encode('UTF-8'))
-        return f"?{quote(field_name, safe=QueryStringParser.URLLIB_SAFE_CHARS)}={query_string_data.decode('UTF-8')}"
+        return f"?{quote(field_name, safe=QueryStringManager.URLLIB_SAFE_CHARS)}={query_string_data.decode('UTF-8')}"
 
     
     @staticmethod
@@ -59,16 +59,16 @@ class QueryStringParser:
             str -- A normalized query string generated from the passed dictionary
         """
 
-        if not QueryStringParser._is_valid_single_level_dict(params):
+        if not QueryStringManager._is_valid_single_level_dict(params):
             raise ValueError("Cannot generate a query string from passed dictionary. \
                 Passed data contains a nested dictionary, a list or an datatype that is not \
                 (int, float, bool, str)")
 
         # Create query string and convert booleans to lowercase
-        raw_query_string = "&".join([f"{key}={QueryStringParser._normalize_value(value)}" for (key,value) in params.items()])
+        raw_query_string = "&".join([f"{key}={QueryStringManager._normalize_value(value)}" for (key,value) in params.items()])
 
         # Normalize special characters for URLs
-        return "?" + quote(raw_query_string, safe=safe_chars or QueryStringParser.URLLIB_SAFE_CHARS)
+        return "?" + quote(raw_query_string, safe=safe_chars or QueryStringManager.URLLIB_SAFE_CHARS)
     # -------------------------------------------------------- #
 
     
@@ -164,7 +164,7 @@ class QueryStringParser:
                 raise ValueError("Malformatted query string")
             
             # Convert data
-            parsed_data[unquote(key_and_value[0])] = QueryStringParser._un_normalize_value(unquote(key_and_value[1])) if \
+            parsed_data[unquote(key_and_value[0])] = QueryStringManager._un_normalize_value(unquote(key_and_value[1])) if \
                 normalize_value else unquote(key_and_value[1])
 
         return parsed_data

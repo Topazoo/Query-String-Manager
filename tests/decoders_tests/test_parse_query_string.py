@@ -1,4 +1,4 @@
-from src.QueryStringParser import QueryStringParser
+from src.QueryStringManager import QueryStringManager
 
 import unittest
 
@@ -7,7 +7,7 @@ from decimal import Decimal
 
 class TestParseQueryString(unittest.TestCase):
     """
-        Tests for :class:`QueryStringParser.parse_query_string()`
+        Tests for :class:`QueryStringManager.parse_query_string()`
     """
 
     def test_throws_exception_on_invalid_query_string(self):
@@ -25,7 +25,7 @@ class TestParseQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_INVALID_STRINGS:
-            self.assertRaises(ValueError, lambda: QueryStringParser.parse_query_string(test_dict))
+            self.assertRaises(ValueError, lambda: QueryStringManager.parse_query_string(test_dict))
 
 
     def test_parse_single_arg_query_string(self):
@@ -46,7 +46,7 @@ class TestParseQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[0], QueryStringParser.parse_query_string(test_dict[1]))
+            self.assertEquals(test_dict[0], QueryStringManager.parse_query_string(test_dict[1]))
 
 
     def test_parse_multiple_arg_query_string(self):
@@ -66,7 +66,7 @@ class TestParseQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[0], QueryStringParser.parse_query_string(test_dict[1]))
+            self.assertEquals(test_dict[0], QueryStringManager.parse_query_string(test_dict[1]))
     
             
     def test_not_normalizing_values(self):
@@ -84,5 +84,5 @@ class TestParseQueryString(unittest.TestCase):
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:
-            self.assertEquals(test_dict[0], QueryStringParser.parse_query_string(test_dict[1], False))
+            self.assertEquals(test_dict[0], QueryStringManager.parse_query_string(test_dict[1], False))
     

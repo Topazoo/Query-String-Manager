@@ -4,7 +4,7 @@ import unittest
 
 class TestIsSingleLevelDict(unittest.TestCase):
     """
-        Tests for :class:`QueryStringManager._is_valid_single_level_dict()`
+        Tests for :class:`QueryStringParser._is_valid_single_level_dict()`
     """
 
     def test_empty_dict_is_invalid(self):
