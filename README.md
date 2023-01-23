@@ -19,7 +19,7 @@ Python 3.9.0 (default, Oct 27 2020, 14:15:17)
 [Clang 12.0.0 (clang-1200.0.32.21)] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
 
->>> from query_string_manager import QueryStringManager
+>>> from QueryStringManager import QueryStringManager
 
 # Generate a standard query string from a dictionary
 
@@ -89,7 +89,7 @@ And this library could be used to automatically decode this back to correctly ty
 This library can also be used to generate these query strings directly:
 
 ```python
->>> from query_string_manager import QueryStringManager
+>>> from QueryStringManager import QueryStringManager
 
 >>> QueryStringManager.generate_base64_query_string({'nested': {'a': 'a', 'b': 'b'}, 'list': [1, {'in': 'list'}, True]}, field_name="data")
 '?data=eyJuZXN0ZWQiOiB7ImEiOiAiYSIsICJiIjogImIifSwgImxpc3QiOiBbMSwgeyJpbiI6ICJsaXN0In0sIHRydWVdfQ=='
@@ -98,7 +98,7 @@ This library can also be used to generate these query strings directly:
 For the cost of a tiny performance hit, the `parse()` method may be used to parse either a base64 encoded or normal format query string, or a query string with a mix of formats:
 
 ```python
->>> from query_string_manager import QueryStringManager
+>>> from QueryStringManager import QueryStringManager
 
 >>> QueryStringManager.parse("?val2=false&y=eyJ0ZXN0MiI6IFsxLCAyLCAzXX0=")
 {"val2": False, "y": {"test2": [1,2,3]}}
