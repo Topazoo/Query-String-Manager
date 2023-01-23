@@ -1,4 +1,4 @@
-from src.query_string_manager import QueryStringManager
+from src.QueryStringManager import QueryStringManager
 
 import unittest
 
