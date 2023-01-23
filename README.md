@@ -79,7 +79,7 @@ var obj = {nested: {a: 'a', b: 'b'}, list: [1, {"in": "list"}, true]};
 And this library could be used to automatically decode this back to correctly typed objects in Python:
 
 ```python
->>> from query_string_manager import QueryStringManager
+>>> from QueryStringManager import QueryStringManager
 
 >>> QueryStringManager.parse_base64_query_string('?data=eyJuZXN0ZWQiOnsiYSI6ImEiLCJiIjoiYiJ9LCJsaXN0IjpbMSx7ImluIjoibGlzdCJ9LHRydWVdfQ==')
 
