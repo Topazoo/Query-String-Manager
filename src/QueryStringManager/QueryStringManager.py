@@ -120,13 +120,9 @@ class QueryStringManager:
             if len(key_and_value) != 2:
                 raise ValueError("Malformatted query string")
             
-            # Detect base64 encoded strings
-            if cls._is_likely_base64(key_and_value[1]):
-                try:
-                    parsed_data.update(cls.parse_base64_query_string(key_value))
-                except:
-                    parsed_data.update(cls.parse_query_string(key_value))
-            else:
+            try:
+                parsed_data.update(cls.parse_base64_query_string(key_value))
+            except:
                 parsed_data.update(cls.parse_query_string(key_value))
         
         return parsed_data
@@ -312,14 +308,4 @@ class QueryStringManager:
             return int(param)
         
         return param
-    
-    @staticmethod
-    def _is_likely_base64(s: str) -> bool:
-        """Check if a string is Base64 encoded."""
-
-        try:
-            base64.urlsafe_b64decode(s)
-            return True
-        except Exception:
-            return False
     # -------------------------------------------------------- #
