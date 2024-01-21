@@ -28,6 +28,7 @@ class TestUnifiedParseQueryString(unittest.TestCase):
             ({"test": True}, "?test=true"),
             ({"test": False}, "?test=false"),
             ({"test": Decimal("3.14")}, "?test=3.14"),
+            ({"test": "MSFT"}, "?test=MSFT")
         ]
 
         for test_dict in TEST_DICTS_AND_RESULTS:

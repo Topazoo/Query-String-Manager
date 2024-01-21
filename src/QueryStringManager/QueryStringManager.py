@@ -12,8 +12,8 @@ class QueryStringManager:
     URLLIB_SAFE_CHARS = ";/?!:@&=+$,."
 
     # ----------------------- Encoders ----------------------- #
-    @staticmethod
-    def generate_base64_query_string(params:Union[int, str, bool, float, Decimal, list, dict], field_name:str="q") -> str:
+    @classmethod
+    def generate_base64_query_string(cls, params:Union[int, str, bool, float, Decimal, list, dict], field_name:str="q") -> str:
         """
         Generate a base64 encoded query string from a passed dictionary. Unlike a standard query string,
         a base64 encoded query string can support nested dictionaries and lists. A field identifier should
@@ -37,11 +37,11 @@ class QueryStringManager:
             not serializable")
         
         query_string_data = base64.urlsafe_b64encode(json.dumps(params, default=float).encode('UTF-8'))
-        return f"?{quote(field_name, safe=QueryStringManager.URLLIB_SAFE_CHARS)}={query_string_data.decode('UTF-8')}"
+        return f"?{quote(field_name, safe=cls.URLLIB_SAFE_CHARS)}={query_string_data.decode('UTF-8')}"
 
     
-    @staticmethod
-    def generate_query_string(params:dict, safe_chars:str=None) -> str:
+    @classmethod
+    def generate_query_string(cls, params:dict, safe_chars:str=None) -> str:
         """
         Generate a query string from a passed dictionary The passed dictionary must 
         meet the conditions defined in `_is_valid_single_level_dict()` or a ValueError will
@@ -59,22 +59,22 @@ class QueryStringManager:
             str -- A normalized query string generated from the passed dictionary
         """
 
-        if not QueryStringManager._is_valid_single_level_dict(params):
+        if not cls._is_valid_single_level_dict(params):
             raise ValueError("Cannot generate a query string from passed dictionary. \
                 Passed data contains a nested dictionary, a list or an datatype that is not \
                 (int, float, bool, str)")
 
         # Create query string and convert booleans to lowercase
-        raw_query_string = "&".join([f"{key}={QueryStringManager._normalize_value(value)}" for (key,value) in params.items()])
+        raw_query_string = "&".join([f"{key}={cls._normalize_value(value)}" for (key,value) in params.items()])
 
         # Normalize special characters for URLs
-        return "?" + quote(raw_query_string, safe=safe_chars or QueryStringManager.URLLIB_SAFE_CHARS)
+        return "?" + quote(raw_query_string, safe=safe_chars or cls.URLLIB_SAFE_CHARS)
     # -------------------------------------------------------- #
 
     
     # ----------------------- Decoders ----------------------- #
-    @staticmethod
-    def parse(query_string:str) -> dict:
+    @classmethod
+    def parse(cls, query_string:str) -> dict:
         """
         Parses a passed query string into a dictionary. The data in the query string may be in standard or
         in base64 format. This method will detect the encoding and parse it. Values parsed from the query string
@@ -121,10 +121,13 @@ class QueryStringManager:
                 raise ValueError("Malformatted query string")
             
             # Detect base64 encoded strings
-            if QueryStringManager._is_base64(key_and_value[1]):
-                parsed_data.update(QueryStringManager.parse_base64_query_string(key_value))
+            if cls._is_likely_base64(key_and_value[1]):
+                try:
+                    parsed_data.update(cls.parse_base64_query_string(key_value))
+                except:
+                    parsed_data.update(cls.parse_query_string(key_value))
             else:
-                parsed_data.update(QueryStringManager.parse_query_string(key_value))
+                parsed_data.update(cls.parse_query_string(key_value))
         
         return parsed_data
 
@@ -177,8 +180,8 @@ class QueryStringManager:
         return parsed_data
     
     
-    @staticmethod
-    def parse_query_string(query_string:str, normalize_value:bool=True) -> dict:
+    @classmethod
+    def parse_query_string(cls, query_string:str, normalize_value:bool=True) -> dict:
         """
         Parses a standard query string into a dictionary. By default, passed data will be normalized
         to Python objects (e.g. "false" will become False). Floating point data will be converted to `decimal.Decimal`
@@ -220,7 +223,7 @@ class QueryStringManager:
                 raise ValueError("Malformatted query string")
             
             # Convert data
-            parsed_data[unquote(key_and_value[0])] = QueryStringManager._un_normalize_value(unquote(key_and_value[1])) if \
+            parsed_data[unquote(key_and_value[0])] = cls._un_normalize_value(unquote(key_and_value[1])) if \
                 normalize_value else unquote(key_and_value[1])
 
         return parsed_data
@@ -311,10 +314,11 @@ class QueryStringManager:
         return param
     
     @staticmethod
-    def _is_base64(s:str):
-        """ Check if a string is base64 encoded """
+    def _is_likely_base64(s: str) -> bool:
+        """Check if a string is Base64 encoded."""
+
         try:
-            base64.urlsafe_b64decode(s).decode()
+            base64.urlsafe_b64decode(s)
             return True
         except Exception:
             return False
